@@ -30,6 +30,27 @@ class Auth extends MY_public_Controller {
         $this->load->view($this->view_dir.'register');
     }
 
+    public function profile()
+    {
+        $config = $this->user->get_validate_rule(); // バリデーションのルール設定
+
+        unset($config[$this->user->get_prefix().'password']);
+
+        $this->form_validation->set_rules($config); // バリデーションの設定
+
+        if($this->form_validation->run())
+        {
+            $this->user->set_post_data();
+            $this->user->update();
+
+            $this->user->set_message('<div class="alert alert-success" role="alert">変更完了</div>');
+
+            redirect(site_url($this->view_dir.'profile'));
+        }
+
+        $this->load->view($this->view_dir.'profile');
+    }
+
     public function logout()
     {
         if($this->user->is_login())

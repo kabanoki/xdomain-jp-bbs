@@ -8,6 +8,8 @@ class Model_user extends CI_Model{
     protected $login_user = array();
     protected $itemNo = 0;
     protected $sql_data = array();
+    protected $message = array();
+
 
     function __construct()
     {
@@ -284,6 +286,26 @@ class Model_user extends CI_Model{
         if(preg_match('/^[\-+]?[0-9]*\.?[0-9]+$/', $no))
             $this->itemNo = $no;
     }
+
+
+    /**
+     * @param $message
+     * @param string $type [danger,info,success,warning]
+     */
+    public function set_message($message="", $type="danger")
+    {
+        array_push($this->message, $message);
+
+        $this->session->set_flashdata($this->table.'_message', $this->message);
+    }
+    public function get_message()
+    {
+        $tmp = $this->session->flashdata($this->table.'_message');
+
+        if(!empty($tmp))
+            return join($tmp);
+    }
+
 
 }
 ?>

@@ -12,7 +12,8 @@
                         <?php echo $this->user->get_login_user('name') ?> さん
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="user.html">プロフィール</a></li>
+                        <li><a class="dropdown-item" href="<?php echo site_url('auth/profile') ?>">プロフィール</a></li>
+                        <li><a class="dropdown-item" href="<?php echo site_url('auth/change_password') ?>">パスワードの変更</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="<?php echo site_url('auth/logout') ?>">ログアウト</a></li>
                     </ul>
