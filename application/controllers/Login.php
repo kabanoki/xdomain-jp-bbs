@@ -26,7 +26,7 @@ class Login extends MY_public_Controller {
                     'user_no' => $this->user->extract_item('no'),
                 ));
 
-                redirect(site_url());
+                redirect(site_url('mypage'));
             }
 
             $this->login->set_message('メールアドレスもしくはパスワードが間違っています');

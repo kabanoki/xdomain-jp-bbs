@@ -13,80 +13,36 @@
     <?php $this->load->view('include/components/navi') ?>
 
     <div class="py-5 text-center">
-        <h2>タイトル</h2>
-        <p class="lead">概要概要概要概要概要概要概要概要概要概要概要概要</p>
+        <h2><?php echo $this->thread->extract_item('title') ?></h2>
+        <p class="lead"><?php echo $this->thread->extract_item('description') ?></p>
     </div>
+    <?php echo $this->message->get_message() ?>
     <div class="card mb-5">
         <div class="list-group">
+            <?php foreach ($this->message->get_thread_items() AS $item){ $this->message->set_item($item) ?>
             <div class="list-group-item list-group-item-action ">
                 <div class="mb-4 d-flex">
                     <div class="flex-grow-1">
-                        <small class="me-3">投稿者： 椛澤</small>
-                        <small>投稿日時: 2023-04-17</small>
+                        <small class="me-3">投稿者： <?php echo $this->message->extract_item('author_name') ?></small>
+                        <small>投稿日時: <?php echo date('Y-m-d H:i:s') ?></small>
                     </div>
-                    <a class="btn btn-outline-danger btn-sm">削除</a>
+                    <?php if($this->message->has_author()){ ?>
+                    <?php //todo 本当はJavascriptをトリガーにしたい  ?>
+                    <a class="btn btn-outline-danger btn-sm" href="<?php echo site_url("{$this->view_dir}delete_message/{$this->thread->get_itemNo()}/{$this->message->extract_item('no')}") ?>">削除</a>
+                    <?php } ?>
                 </div>
-                <p class="">概要概要概要概要概要概要概要概要概要</p>
+                <p class=""><?php echo nl2br($this->message->extract_item('text')) ?></p>
             </div>
-            <div class="list-group-item list-group-item-action ">
-                <div class="mb-4 d-flex">
-                    <div class="flex-grow-1">
-                        <small class="me-3">投稿者： 椛澤</small>
-                        <small>投稿日時: 2023-04-17</small>
-                    </div>
-                    <a class="btn btn-outline-danger btn-sm">削除</a>
-                </div>
-                <p class="">概要概要概要概要概要概要概要概要概要</p>
-            </div>
-            <div class="list-group-item list-group-item-action ">
-                <div class="mb-4 d-flex">
-                    <div class="flex-grow-1">
-                        <small class="me-3">投稿者： 椛澤</small>
-                        <small>投稿日時: 2023-04-17</small>
-                    </div>
-                    <a class="btn btn-outline-danger btn-sm">削除</a>
-                </div>
-                <p class="">概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要</p>
-            </div>
-            <div class="list-group-item list-group-item-action ">
-                <div class="mb-4 d-flex">
-                    <div class="flex-grow-1">
-                        <small class="me-3">投稿者： 椛澤</small>
-                        <small>投稿日時: 2023-04-17</small>
-                    </div>
-                    <a class="btn btn-outline-danger btn-sm">削除</a>
-                </div>
-                <p class="">概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要<br>概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要概要</p>
-            </div>
-            <div class="list-group-item list-group-item-action ">
-                <div class="mb-4 d-flex">
-                    <div class="flex-grow-1">
-                        <small class="me-3">投稿者： 椛澤</small>
-                        <small>投稿日時: 2023-04-17</small>
-                    </div>
-                    <a class="btn btn-outline-danger btn-sm">削除</a>
-                </div>
-                <p class="">概要概要概要概要概要概要概要概要概要</p>
-            </div>
-            <div class="list-group-item list-group-item-action ">
-                <div class="mb-4 d-flex">
-                    <div class="flex-grow-1">
-                        <small class="me-3">投稿者： 椛澤</small>
-                        <small>投稿日時: 2023-04-17</small>
-                    </div>
-                    <a class="btn btn-outline-danger btn-sm">削除</a>
-                </div>
-                <p class="">概要概要概要概要概要概要概要概要概要</p>
-            </div>
+            <?php } ?>
         </div>
     </div>
     <hr />
     <div class="card">
         <div class="card-body">
-            <form action="" method="post">
-                <div class="mb-3">
+            <form action="<?php echo site_url($this->view_dir.'add_message/'.$this->thread->get_itemNo()) ?>" method="post">
+                <div class="mb-3"><?php $id="text" ?>
                     <label for="" class="form-label fw-bold">メッセージ</label>
-                    <textarea class="form-control" id="" rows="3"></textarea>
+                    <textarea class="form-control" id="" rows="3" name="<?php echo $this->message->get_prefix() . $id ?>" value=""></textarea>
                 </div>
                 <div class="mb-3">
                     <button type="submit" class="btn btn-success">投稿する</button>

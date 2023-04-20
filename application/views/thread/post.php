@@ -11,7 +11,7 @@
 <main class="container mt-5 p-5 bg-white">
     <?php $this->load->view('include/components/navi') ?>
     <div class="py-5 text-center">
-        <h2>スレッド作成</h2>
+        <h2>スレッド投稿</h2>
     </div>
     <div class="">
         <?php echo $this->thread->get_message() ?>
@@ -29,7 +29,7 @@
                         <?php echo form_error($this->thread->get_prefix().$id); ?>
                     </div>
                     <div class="mb-3">
-                        <button type="submit" class="btn btn-success">作成</button>
+                        <button type="submit" class="btn btn-success">登録</button>
                     </div>
                 </form>
             </div>

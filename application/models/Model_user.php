@@ -98,7 +98,7 @@ class Model_user extends CI_Model{
 
         $result = $query->result_array();
 
-        return $result ? $result[0] : FALSE;
+        return $result ? $result[0] : array();
     }
 
     function set_item($data){
@@ -150,7 +150,7 @@ class Model_user extends CI_Model{
 
         $result = $query->result_array();
 
-        return $result ? $result : FALSE;
+        return $result ? $result : array();
     }
 
     function get_login_items($arg=array())

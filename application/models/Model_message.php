@@ -1,8 +1,8 @@
 <?php
 
-class Model_thread extends CI_Model{
+class Model_message extends CI_Model{
 
-    private $table = 'thread';
+    private $table = 'message';
     protected $prefix = 'input_';
     protected $item = array();
     protected $login_user = array();
@@ -24,15 +24,10 @@ class Model_thread extends CI_Model{
     function get_validate_rule()
     {
         $config = array(
-            $this->get_prefix().'title'     => array(
-                'field'   => $this->get_prefix().'title',
-                'label'   => 'タイトル',
-                'rules'   => 'required|max_length[100]|xss_clean',
-            ),
-            $this->get_prefix().'description'    => array(
-                'field'   => $this->get_prefix().'description',
-                'label'   => '概要',
-                'rules'   => 'max_length[500]|xss_clean',
+            $this->get_prefix().'text'    => array(
+                'field'   => $this->get_prefix().'text',
+                'label'   => 'メッセージ',
+                'rules'   => 'required|max_length[500]|xss_clean',
             ),
         );
 
@@ -47,8 +42,9 @@ class Model_thread extends CI_Model{
         $default_data = array(
             'select' => array(
                 $this->table.'.no AS no ',
-                $this->table.'.title AS title ',
-                $this->table.'.description AS description ',
+                $this->table.'.text AS text ',
+                $this->table.'.thread AS thread ',
+                'thread.title AS thread_title',
                 $this->table.'.author AS author ',
                 'user.name AS author_name',
                 $this->table.'.created_date AS created_date',
@@ -69,6 +65,7 @@ class Model_thread extends CI_Model{
 
         $this->db->select(join(', ', $arg['select']), FALSE);
         $this->db->from($this->table);
+        $this->db->join('thread', "thread.no = {$this->table}.thread", 'left');
         $this->db->join('user', "user.no = {$this->table}.author", 'left');
 
         $this->db->where($arg['where']);
@@ -99,8 +96,9 @@ class Model_thread extends CI_Model{
         $default_data = array(
             'select' => array(
                 $this->table.'.no AS no ',
-                $this->table.'.title AS title ',
-                $this->table.'.description AS description ',
+                $this->table.'.text AS text ',
+                $this->table.'.thread AS thread ',
+                'thread.title AS thread_title',
                 $this->table.'.author AS author ',
                 'user.name AS author_name',
                 $this->table.'.created_date AS created_date',
@@ -119,6 +117,7 @@ class Model_thread extends CI_Model{
 
         $this->db->select(join(', ', $arg['select']), FALSE);
         $this->db->from($this->table);
+        $this->db->join('thread', "thread.no = {$this->table}.thread", 'left');
         $this->db->join('user', "user.no = {$this->table}.author", 'left');
 
         if(!empty($arg['where'])){
@@ -144,6 +143,23 @@ class Model_thread extends CI_Model{
 
 //----------------------------------------------
 
+    function get_thread_item($arg=array())
+    {
+        $this->db->where(array(
+            $this->table.'.thread' => $this->thread->get_itemNo()
+        ));
+
+        return $this->get_item($arg);
+    }
+    function get_thread_items($arg=array())
+    {
+        $this->db->where(array(
+            $this->table.'.thread' => $this->thread->get_itemNo()
+        ));
+
+        return $this->get_items($arg);
+    }
+
     function get_author_item($arg=array())
     {
         $this->db->where(array(
@@ -152,7 +168,6 @@ class Model_thread extends CI_Model{
 
         return $this->get_item($arg);
     }
-
     function get_author_items($arg=array())
     {
         $this->db->where(array(
@@ -160,6 +175,28 @@ class Model_thread extends CI_Model{
         ));
 
         return $this->get_items($arg);
+    }
+
+    function get_last_thread_item($arg=array())
+    {
+        $this->db->where(array(
+            $this->table.'.thread' => $this->thread->get_itemNo()
+        ));
+
+        $arg = array(
+            'where' => array(
+                $this->table.'.thread' => $this->thread->get_itemNo()
+            ),
+            'orderby'    => array(
+                array(
+                    'order' => $this->table.'.no',
+                    'sort' => 'desc'
+                )
+            ),
+        );
+        $this->db->limit(1);
+
+        return $this->get_item($arg);
     }
 
 //----------------------------------------------
@@ -181,6 +218,7 @@ class Model_thread extends CI_Model{
     {
         $post_data = $this->get_SQL_data();
 
+        $post_data['thread'] = $this->thread->get_itemNo();
         $post_data['author'] = $this->user->get_login_user('no');
 
         $sql = $this->db->insert_string($this->table, $post_data);
