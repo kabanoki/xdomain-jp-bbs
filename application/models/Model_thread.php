@@ -1,8 +1,8 @@
 <?php
 
-class Model_user extends CI_Model{
+class Model_thread extends CI_Model{
 
-    private $table = 'user';
+    private $table = 'thread';
     protected $prefix = 'input_';
     protected $item = array();
     protected $login_user = array();
@@ -14,12 +14,6 @@ class Model_user extends CI_Model{
     function __construct()
     {
         parent::__construct();
-
-        // ユーザー情報をセット
-        if($this->session->has_userdata('user_no')){
-            $this->set_itemNo($this->session->userdata('user_no'));
-            $this->login_user = $this->get_item();
-        }
     }
 
     function get_prefix()
@@ -30,27 +24,17 @@ class Model_user extends CI_Model{
     function get_validate_rule()
     {
         $config = array(
-            $this->get_prefix().'name'     => array(
-                'field'   => $this->get_prefix().'name',
-                'label'   => '名前',
+            $this->get_prefix().'title'     => array(
+                'field'   => $this->get_prefix().'title',
+                'label'   => 'タイトル',
                 'rules'   => 'required|max_length[100]|xss_clean',
             ),
-            $this->get_prefix().'email'    => array(
-                'field'   => $this->get_prefix().'email',
-                'label'   => 'メールアドレス',
-                'rules'   => 'required|valid_email|max_length[255]|xss_clean',
-            ),
-            $this->get_prefix().'password' => array(
-                'field'   => $this->get_prefix().'password',
-                'label'   => 'パスワード',
-                'rules'   => 'required|min_length[8]|max_length[16]|xss_clean',
+            $this->get_prefix().'description'    => array(
+                'field'   => $this->get_prefix().'description',
+                'label'   => '概要',
+                'rules'   => 'max_length[500]|xss_clean',
             ),
         );
-
-        if(!$this->is_login())
-            $config[$this->get_prefix().'email']['rules'] = $config[$this->get_prefix().'email']['rules']."|is_unique[{$this->table}.email]";
-
-        $this->form_validation->set_message('is_unique', "その%sは既に登録済みです。");
 
         $this->form_validation->set_error_delimiters('<div class="alert alert-danger" role="alert">', '</div>');
 
@@ -63,9 +47,10 @@ class Model_user extends CI_Model{
         $default_data = array(
             'select' => array(
                 $this->table.'.no AS no ',
-                $this->table.'.name AS name',
-                $this->table.'.email AS email',
-                $this->table.'.password AS password',
+                $this->table.'.title AS title ',
+                $this->table.'.description AS description ',
+                $this->table.'.author AS author ',
+                'user.name AS author_name',
                 $this->table.'.created_date AS created_date',
                 $this->table.'.update_date AS update_date'
             ),
@@ -84,6 +69,7 @@ class Model_user extends CI_Model{
 
         $this->db->select(join(', ', $arg['select']), FALSE);
         $this->db->from($this->table);
+        $this->db->join('user', "user.no = {$this->table}.author", 'left');
 
         $this->db->where($arg['where']);
 
@@ -113,9 +99,10 @@ class Model_user extends CI_Model{
         $default_data = array(
             'select' => array(
                 $this->table.'.no AS no ',
-                $this->table.'.name AS name',
-                $this->table.'.email AS email',
-                $this->table.'.password AS password',
+                $this->table.'.title AS title ',
+                $this->table.'.description AS description ',
+                $this->table.'.author AS author ',
+                'user.name AS author_name',
                 $this->table.'.created_date AS created_date',
                 $this->table.'.update_date AS update_date'
             ),
@@ -132,6 +119,7 @@ class Model_user extends CI_Model{
 
         $this->db->select(join(', ', $arg['select']), FALSE);
         $this->db->from($this->table);
+        $this->db->join('user', "user.no = {$this->table}.author", 'left');
 
         if(!empty($arg['where'])){
             foreach ($arg['where'] AS $where){
@@ -153,22 +141,25 @@ class Model_user extends CI_Model{
         return $result ? $result : FALSE;
     }
 
-    function get_login_items($arg=array())
-    {
-        $this->db->where(array(
-            $this->table.'.email' => set_value($this->login->get_prefix().'email'),
-        ));
-        return $this->get_items();
-    }
 
 //----------------------------------------------
 
-    function get_login_user($key)
+    function get_author_item($arg=array())
     {
-        if(isset($this->login_user[$key]) && !empty($this->login_user[$key]))
-            return $this->login_user[$key];
+        $this->db->where(array(
+            $this->table.'.author' => $this->user->get_login_user('no')
+        ));
 
-        return FALSE;
+        return $this->get_item($arg);
+    }
+
+    function get_author_items($arg=array())
+    {
+        $this->db->where(array(
+            $this->table.'.author' => $this->user->get_login_user('no')
+        ));
+
+        return $this->get_items($arg);
     }
 
 //----------------------------------------------
@@ -180,7 +171,6 @@ class Model_user extends CI_Model{
             return $this->item[$key];
         }
 
-
         return FALSE;
     }
 
@@ -191,7 +181,7 @@ class Model_user extends CI_Model{
     {
         $post_data = $this->get_SQL_data();
 
-        $post_data['password'] = password_hash($post_data['password'], PASSWORD_DEFAULT);
+        $post_data['author'] = $this->user->get_login_user('no');
 
         $sql = $this->db->insert_string($this->table, $post_data);
 
@@ -261,9 +251,10 @@ class Model_user extends CI_Model{
 
 //----------------------------------------------
 
-    function is_login()
+    function has_author()
     {
-        return !empty($this->login_user);
+        return $this->has_item()
+               && $this->user->get_login_user('no') == $this->extract_item('author');
     }
 
     function has_item()

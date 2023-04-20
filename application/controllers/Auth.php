@@ -32,6 +32,9 @@ class Auth extends MY_public_Controller {
 
     public function profile()
     {
+        if(!$this->user->is_login())
+            show_404();
+
         $config = $this->user->get_validate_rule(); // バリデーションのルール設定
 
         unset($config[$this->user->get_prefix().'password']);
@@ -49,6 +52,33 @@ class Auth extends MY_public_Controller {
         }
 
         $this->load->view($this->view_dir.'profile');
+    }
+
+    public function change_password()
+    {
+        if(!$this->user->is_login())
+            show_404();
+
+        $config = $this->user->get_validate_rule(); // バリデーションのルール設定
+
+        unset($config[$this->user->get_prefix().'name']);
+        unset($config[$this->user->get_prefix().'email']);
+
+        $this->form_validation->set_rules($config); // バリデーションの設定
+
+        if($this->form_validation->run())
+        {
+            $this->user->set_SQL_data(array(
+                'password' => password_hash(set_value($this->user->get_prefix().'password'), PASSWORD_DEFAULT)
+            ));
+            $this->user->update();
+
+            $this->user->set_message('<div class="alert alert-success" role="alert">変更完了</div>');
+
+            redirect(site_url($this->view_dir.'change_password'));
+        }
+
+        $this->load->view($this->view_dir.'change_password');
     }
 
     public function logout()

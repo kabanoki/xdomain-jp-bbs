@@ -10,7 +10,7 @@ class Top extends MY_public_Controller {
         $this->view_dir = 'top/';
 
         $this->load->model('Model_user', 'user');
-//        $this->load->model('Model_thread', 'thread');
+        $this->load->model('Model_thread', 'thread');
     }
 
 	public function index()
