@@ -20,13 +20,15 @@
                     <?php } ?>
                 </div>
                 <div class="list-group">
-                    <?php foreach ($this->thread->get_items() AS $num => $item) { $this->thread->set_item($item) ?>
+                    <?php foreach ($this->thread->get_items() AS $num => $item) { $this->thread->set_item($item); ?>
                     <a href="<?php echo site_url('thread/detail/'.$this->thread->extract_item('no')) ?>" class="list-group-item list-group-item-action">
                         <div class="d-flex w-100 justify-content-between">
                             <h5 class="mb-1"><?php echo $this->thread->extract_item('title') ?></h5>
-                            <small>最終投稿: 2023-04-17<br>最終投稿者：　椛澤</small>
+                            <?php if($this->thread->extract_item('last_message_author_name')) {?>
+                            <small>最終投稿: <?php echo date('Y-m-d H:i:s', strtotime($this->thread->extract_item('last_message_created_date'))) ?><br>最終投稿者：　<?php echo $this->thread->extract_item('last_message_author_name') ?></small>
+                            <?php } ?>
                         </div>
-                        <p class="mb-1"><?php echo $this->thread->extract_item('description') ?></p>
+                        <p class="mb-1"><?php echo $this->thread->extract_item('description') ?>　</p>
                         <small>作成者： <?php echo $this->thread->extract_item('author_name') ?></small>
                     </a>
                     <?php } ?>

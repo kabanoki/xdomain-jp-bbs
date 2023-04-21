@@ -41,6 +41,37 @@ class Model_thread extends CI_Model{
         return $config;
     }
 
+    private function _join_last_message()
+    {
+        $subquery_init = $this->load->database('', TRUE);
+
+        $messageSubQuery = $subquery_init
+            ->select(join(',', array(
+                "MAX(message.no) AS no"
+            )), FALSE)
+            ->from('message')
+            ->group_by('message.thread')
+            ->get_compiled_select();
+
+        $subquery_init->reset_query();
+
+        $subQuery = $subquery_init
+            ->select(join(',', array(
+                "message.no",
+                "message.text",
+                "message.author",
+                "message.thread",
+                "user.name",
+                "message.created_date",
+            )), FALSE)
+            ->from('message')
+            ->join("($messageSubQuery) AS subMsg", "message.no = subMsg.no", FALSE)
+            ->join("user", "user.no = message.author", 'left')
+            ->get_compiled_select();
+
+        $this->db->join("($subQuery) AS last_message", "last_message.thread = {$this->table}.no", 'left', FALSE);
+    }
+
 //----------------------------------------------
     function get_item($arg=array())
     {
@@ -51,6 +82,8 @@ class Model_thread extends CI_Model{
                 $this->table.'.description AS description ',
                 $this->table.'.author AS author ',
                 'user.name AS author_name',
+                'last_message.name AS last_message_author_name',
+                'last_message.created_date AS last_message_created_date',
                 $this->table.'.created_date AS created_date',
                 $this->table.'.update_date AS update_date'
             ),
@@ -70,6 +103,7 @@ class Model_thread extends CI_Model{
         $this->db->select(join(', ', $arg['select']), FALSE);
         $this->db->from($this->table);
         $this->db->join('user', "user.no = {$this->table}.author", 'left');
+        $this->_join_last_message();
 
         $this->db->where($arg['where']);
 
@@ -103,6 +137,8 @@ class Model_thread extends CI_Model{
                 $this->table.'.description AS description ',
                 $this->table.'.author AS author ',
                 'user.name AS author_name',
+                'last_message.name AS last_message_author_name',
+                'last_message.created_date AS last_message_created_date',
                 $this->table.'.created_date AS created_date',
                 $this->table.'.update_date AS update_date'
             ),
@@ -120,6 +156,7 @@ class Model_thread extends CI_Model{
         $this->db->select(join(', ', $arg['select']), FALSE);
         $this->db->from($this->table);
         $this->db->join('user', "user.no = {$this->table}.author", 'left');
+        $this->_join_last_message();
 
         if(!empty($arg['where'])){
             foreach ($arg['where'] AS $where){
@@ -143,6 +180,8 @@ class Model_thread extends CI_Model{
 
 
 //----------------------------------------------
+
+
 
     function get_author_item($arg=array())
     {

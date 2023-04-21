@@ -11,6 +11,7 @@ class Top extends MY_public_Controller {
 
         $this->load->model('Model_user', 'user');
         $this->load->model('Model_thread', 'thread');
+        $this->load->model('Model_message', 'message');
     }
 
 	public function index()

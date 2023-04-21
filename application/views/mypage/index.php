@@ -20,19 +20,17 @@
         </div>
         <h5>■あなたが投稿したスレッド</h5>
         <div class="list-group">
-            <?php foreach ($this->thread->get_author_items() AS $num => $item) {
-                $this->thread->set_item($item);
-                $this->thread->set_itemNo($item['no']);
-                $this->message->set_item($this->message->get_last_thread_item());
-                ?>
-                <div class="list-group-item list-group-item-action">
+            <?php foreach ($this->thread->get_author_items() AS $num => $item) { $this->thread->set_item($item); ?>
+                <div class="list-group-item">
                     <div class="d-flex w-100 justify-content-between">
                         <h5 class="mb-1">
                             <a class="" href="<?php echo site_url('thread/detail/'.$this->thread->extract_item('no')) ?>"><?php echo $this->thread->extract_item('title') ?></a>
                         </h5>
-                        <small>最終投稿: 2023-04-17<br>最終投稿者：　椛澤</small>
+                        <?php if($this->message->has_item()) {?>
+                        <small>最終投稿: <?php echo date('Y-m-d H:i:s', strtotime($this->thread->extract_item('last_message_created_date'))) ?><br>最終投稿者：　<?php echo $this->thread->extract_item('last_message_author_name') ?></small>
+                        <?php } ?>
                     </div>
-                    <p class="mb-1"><?php echo $this->thread->extract_item('description') ?></p>
+                    <p class="mb-1"><?php echo $this->thread->extract_item('description') ?>　</p>
                     <small>作成者： <?php echo $this->thread->extract_item('author_name') ?></small>
                     <div class="text-end">
                         <a class="btn btn-sm btn-secondary" href="<?php echo site_url('thread/post/'.$this->thread->extract_item('no')) ?>">編集</a>

@@ -20,7 +20,7 @@
     <div class="card mb-5">
         <div class="list-group">
             <?php foreach ($this->message->get_thread_items() AS $item){ $this->message->set_item($item) ?>
-            <div class="list-group-item list-group-item-action ">
+            <div class="list-group-item">
                 <div class="mb-4 d-flex">
                     <div class="flex-grow-1">
                         <small class="me-3">投稿者： <?php echo $this->message->extract_item('author_name') ?></small>
