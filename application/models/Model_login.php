@@ -30,7 +30,7 @@ class Model_login extends CI_Model{
             ),
         );
 
-        $this->form_validation->set_error_delimiters('<p>', '</p>');
+        $this->form_validation->set_error_delimiters('<div class="alert alert-danger" role="alert">', '</div>');
 
         return $config;
     }

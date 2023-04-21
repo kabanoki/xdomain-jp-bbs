@@ -31,10 +31,6 @@ class Login extends MY_public_Controller {
 
             $this->login->set_message('メールアドレスもしくはパスワードが間違っています');
         }
-        else if($this->input->post('btn_login'))
-        {
-            $this->login->set_message(validation_errors());
-        }
 
         $this->load->view($this->view_dir.'index');
     }

@@ -20,12 +20,14 @@
                 <?php echo $this->login->get_message() ?>
                 <form id="myform" action="" method="post">
                     <div class="mb-3"><?php $id = $this->user->get_prefix().'email' ?>
-                        <label for="" class="form-label fw-bold">メールアドレス<small class="text-danger">(必須)</small></label>
+                        <label for="" class="form-label fw-bold">メールアドレス</label>
                         <input type="email" class="form-control" id="" name="<?php echo $id ?>" value="<?php echo set_value($id) ?>">
+                        <?php echo form_error($id); ?>
                     </div>
                     <div class="mb-3"><?php $id = $this->user->get_prefix().'password' ?>
-                        <label for="" class="form-label fw-bold">パスワード<small class="text-danger">(必須)</small></label>
+                        <label for="" class="form-label fw-bold">パスワード</label>
                         <input type="password" class="form-control" id="" name="<?php echo $id ?>" value="<?php echo set_value($id) ?>">
+                        <?php echo form_error($id); ?>
                     </div>
                     <div class="mb-3">
                         <button type="submit" class="btn btn-success" name="btn_login" value="ログイン">ログイン</button>
