@@ -13,14 +13,14 @@
             <div class="py-5 text-center">
                 <h2>掲示板</h2>
             </div>
-            <div class="">
+            <div class="mb-5">
                 <div class="text-end mb-3">
                     <?php if($this->user->is_login()){ ?>
                     <a class="btn btn-secondary" href="<?php echo site_url('thread/post') ?>">新規スレッド作成</a>
                     <?php } ?>
                 </div>
-                <div class="list-group">
-                    <?php foreach ($this->thread->get_items() AS $num => $item) { $this->thread->set_item($item); ?>
+                <div class="list-group mb-3">
+                    <?php foreach ($this->thread->get_pagination() AS $num => $item) { $this->thread->set_item($item); ?>
                     <a href="<?php echo site_url('thread/detail/'.$this->thread->extract_item('no')) ?>" class="list-group-item list-group-item-action">
                         <div class="d-flex w-100 justify-content-between">
                             <h5 class="mb-1"><?php echo $this->thread->extract_item('title') ?></h5>
@@ -34,6 +34,7 @@
                     <?php } ?>
                 </div>
             </div>
+            <?php echo $this->pagination->create_links(); ?>
         </main>
     </body>
 </html>

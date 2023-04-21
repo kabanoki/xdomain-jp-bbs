@@ -90,7 +90,7 @@ class Model_thread extends CI_Model{
             'orderby'    => array(
                 array(
                     'order' => $this->table.'.no',
-                    'sort' => 'asc'
+                    'sort' => 'desc'
                 )
             ),
             'where'   => array(
@@ -145,7 +145,7 @@ class Model_thread extends CI_Model{
             'orderby'    => array(
                 array(
                     'order' => $this->table.'.no',
-                    'sort' => 'asc'
+                    'sort' => 'desc'
                 )
             ),
             'where'   => array()
@@ -181,7 +181,23 @@ class Model_thread extends CI_Model{
 
 //----------------------------------------------
 
+    function get_pagination_max_row()
+    {
+        return 10;
+    }
 
+    function get_pagination($arg=array())
+    {
+        $current_page = 1;
+
+        if($this->input->get('per_page'))
+            $current_page = intval($this->input->get('per_page'));
+
+        $this->db->limit($this->get_pagination_max_row());
+        $this->db->offset($this->get_pagination_max_row() * ($current_page - 1));
+
+        return $this->get_items($arg);
+    }
 
     function get_author_item($arg=array())
     {
