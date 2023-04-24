@@ -1,7 +1,7 @@
 # 研修用のCodeIgniterを使った掲示板
 
 ## テストサイト
-http://jp111009.php.xdomain.jp/
+http://jp111009.php.xdomain.jp/bbs/
 
 ## 初期設定
 1.「index_php」を「index.php」にリネーム
