@@ -67,6 +67,9 @@ class Thread extends MY_public_Controller {
 
     public function add_message($no)
     {
+        if(!$this->user->is_login())
+            show_404();
+
         $this->thread->set_itemNo($no);
 
         if($this->thread->get_itemNo() != $no)

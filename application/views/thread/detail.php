@@ -14,7 +14,7 @@
 
     <div class="py-5 text-center">
         <h2><?php echo $this->thread->extract_item('title') ?></h2>
-        <p class="lead"><?php echo $this->thread->extract_item('description') ?></p>
+        <p class="lead"><?php echo nl2br($this->thread->extract_item('description')) ?></p>
     </div>
     <?php echo $this->message->get_message() ?>
     <div class="card mb-5">
@@ -36,6 +36,7 @@
             <?php } ?>
         </div>
     </div>
+    <?php if($this->user->is_login()) {?>
     <hr />
     <div class="card">
         <div class="card-body">
@@ -50,6 +51,7 @@
             </form>
         </div>
     </div>
+    <?php } ?>
 </main>
 </body>
 </html>

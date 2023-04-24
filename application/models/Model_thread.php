@@ -144,6 +144,10 @@ class Model_thread extends CI_Model{
             ),
             'orderby'    => array(
                 array(
+                    'order' => 'last_message.created_date',
+                    'sort' => 'desc'
+                ),
+                array(
                     'order' => $this->table.'.no',
                     'sort' => 'desc'
                 )
@@ -183,7 +187,7 @@ class Model_thread extends CI_Model{
 
     function get_pagination_max_row()
     {
-        return 10;
+        return 5;
     }
 
     function get_pagination($arg=array())
@@ -237,6 +241,7 @@ class Model_thread extends CI_Model{
         $post_data = $this->get_SQL_data();
 
         $post_data['author'] = $this->user->get_login_user('no');
+        $post_data['created_date'] = date('Y-m-d H:i:s');
 
         $sql = $this->db->insert_string($this->table, $post_data);
 

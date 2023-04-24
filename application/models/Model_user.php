@@ -191,6 +191,7 @@ class Model_user extends CI_Model{
     {
         $post_data = $this->get_SQL_data();
 
+        $post_data['created_date'] = date('Y-m-d H:i:s');
         $post_data['password'] = password_hash($post_data['password'], PASSWORD_DEFAULT);
 
         $sql = $this->db->insert_string($this->table, $post_data);

@@ -220,6 +220,7 @@ class Model_message extends CI_Model{
 
         $post_data['thread'] = $this->thread->get_itemNo();
         $post_data['author'] = $this->user->get_login_user('no');
+        $post_data['created_date'] = date('Y-m-d H:i:s');
 
         $sql = $this->db->insert_string($this->table, $post_data);
 
